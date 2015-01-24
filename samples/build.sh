@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-STEPS=(s1_basics s2_classes s3_game s4_element s5_template s6_board s7_enrollment s8_serialization s9_server s10_alltogether)
+STEPS=(s1_basics s2_classes s4_element s5_template s6_board s7_enrollment s10_alltogether)
 MAX_PROCS=${MAX_PROCS:=1}
 
 # $0..N-1 pub parameters to run
@@ -38,8 +38,5 @@ mkdir -p $PWD/build
 pub_cmd get "${STEPS[0]}"
 foreach ${STEPS[@]:1} | execute_p pub_cmd get
 foreach ${STEPS[@]:1} | execute run_test "s2_classes_test"
-foreach ${STEPS[@]:2} | execute run_test "s3_game_test"
-foreach ${STEPS[@]:7} | execute run_test "s8_event_codec_test"
-foreach ${STEPS[@]:7} | execute run_test "s8_event_codec_test_single"
 foreach ${STEPS[@]:3:4} ${STEPS[9]} | execute_p build
 
