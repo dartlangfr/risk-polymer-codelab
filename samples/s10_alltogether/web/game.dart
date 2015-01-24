@@ -3,7 +3,6 @@ import 'dart:html';
 import 'package:polymer/polymer.dart';
 import 'package:risk_engine/client.dart';
 import 'package:risk_engine/snapshot.dart';
-import 'package:risk/risk.dart';
 
 @CustomTag('risk-game')
 class RiskGame extends AbstractRiskGame {
