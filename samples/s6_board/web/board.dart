@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:html';
 
 import 'package:polymer/polymer.dart';
-import 'package:risk/risk.dart';
 import 'package:risk_engine/client.dart';
 import 'package:risk_engine/snapshot.dart';
 

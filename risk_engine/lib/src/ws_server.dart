@@ -1,21 +1,32 @@
 part of risk_engine.server;
 
 
-abstract class AbstractRiskWsServer {
+class RiskWsServer {
   final Map<int, WebSocket> _clients = {};
 
-  RiskGameEngine get engine;
+  final RiskGameEngine engine;
 
-  Codec<Object, Map> get engineEventCodec;
+  Codec<Object, Map> get engineEventCodec => EVENT;
 
   int currentPlayerId = 1;
+
+  RiskWsServer() : this.fromEngine(new RiskGameEngine(new StreamController.broadcast(), new RiskGameStateImpl()));
+  RiskWsServer.fromEngine(this.engine);
 
   void handleWebSocket(WebSocket ws) {
     final playerId = connectPlayer(ws);
     listen(ws, playerId);
   }
 
-  void listen(Stream ws, int playerId);
+  void listen(Stream ws, int playerId) {
+    // Decode JSON
+    ws.map(JSON.decode)// Log incoming events
+    .map(logEvent("IN", playerId))// Decode events
+    .map(EVENT.decode)// Avoid unknown events and cheaters
+    .where((event) => event is PlayerEvent && event.playerId == playerId)// Handle events in game engine
+    .listen(engine.handle)// Connection closed
+    .onDone(() => print("Player $playerId left"));
+  }
 
   int connectPlayer(WebSocket ws) {
     int playerId = currentPlayerId++;
@@ -72,23 +83,4 @@ Future<HttpServer> startServer(int port, String path) {
       return server;
     });
   }, onError: (e) => print("An error occurred $e"));
-}
-
-class RiskWsServer extends AbstractRiskWsServer {
-  final RiskGameEngine engine;
-
-  Codec<Object, Map> get engineEventCodec => EVENT;
-
-  RiskWsServer() : this.fromEngine(new RiskGameEngine(new StreamController.broadcast(), new RiskGameStateImpl()));
-  RiskWsServer.fromEngine(this.engine);
-
-  void listen(Stream ws, int playerId) {
-    // Decode JSON
-    ws.map(JSON.decode)// Log incoming events
-    .map(logEvent("IN", playerId))// Decode events
-    .map(EVENT.decode)// Avoid unknown events and cheaters
-    .where((event) => event is PlayerEvent && event.playerId == playerId)// Handle events in game engine
-    .listen(engine.handle)// Connection closed
-    .onDone(() => print("Player $playerId left"));
-  }
 }

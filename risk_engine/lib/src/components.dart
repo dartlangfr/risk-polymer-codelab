@@ -80,11 +80,12 @@ class Move extends Object with Observable {
 const AUTO_SETUP = false;
 
 /// Brings some logical facilitation for RiskGame element
-abstract class AbstractRiskGame extends PolymerElement {
-  Codec<Object, Map> get eventEngineCodec;
+@CustomTag('risk-game')
+class RiskGame extends PolymerElement {
+  Codec<Object, Map> get eventEngineCodec => EVENT;
   
   @observable
-  RiskGameState get game;
+  final RiskGameState game = new RiskGameStateImpl();
 
   final WebSocket ws;
 
@@ -96,19 +97,23 @@ abstract class AbstractRiskGame extends PolymerElement {
   @observable
   Move pendingMove;
 
-  AbstractRiskGame.created(): this.forUrl(_currentWebSocketUri());
+  RiskGame.created(): this.forUrl(_currentWebSocketUri());
 
-  AbstractRiskGame.forUrl(String url): this.fromWebSocket(new WebSocket(url));
+  RiskGame.forUrl(String url): this.fromWebSocket(new WebSocket(url));
   
-  AbstractRiskGame.fromWebSocket(this.ws): super.created() {
+  RiskGame.fromWebSocket(this.ws): super.created() {
     listen(ws);
   }
   
   /// Listen events on the given [webSocket].
-  void listen(WebSocket webSocket);
+  void listen(WebSocket webSocket) {
+    ws.onMessage.map((e) => e.data).map(JSON.decode).map(logEvent("IN")).map(eventEngineCodec.decode).listen(handleEvents);
+  }
 
   /// Send the given [event] through the WebSocket 
-  void sendEvent(PlayerEvent event);
+  void sendEvent(PlayerEvent event) {
+    ws.send(logEvent('OUT')(JSON.encode(eventEngineCodec.encode(event))));
+  }
 
   void handleEvents(EngineEvent event) {
     game.update(event);
@@ -146,7 +151,11 @@ abstract class AbstractRiskGame extends PolymerElement {
   }
 
   /// Send a JoinGame event though the WebSocket
-  joinGame(CustomEvent e, var detail, Element target);
+  joinGame(CustomEvent e, var detail, Element target) => sendEvent(new JoinGame()
+    ..playerId = playerId
+    ..color = detail['color']
+    ..avatar = detail['avatar']
+    ..name = detail['name']);
 
   /// Send a Attack event though the WebSocket
   attack(CustomEvent e, var detail, Element target) => sendEvent(new Attack()

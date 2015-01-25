@@ -1,6 +1,5 @@
 import 'package:polymer/polymer.dart';
 import 'package:risk_engine/risk_engine.dart';
-import 'package:risk/risk.dart';
 
 @CustomTag('risk-players')
 class RiskPlayers extends PolymerElement {
