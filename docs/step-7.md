@@ -158,7 +158,7 @@ You will now improve the modal panel to allow it to be closable.
 
 Key information:
 * The `<risk-modal>` element can now be closable or not depending on its `closable` attribute.
-* By clicking on the _close button_ a [CustomEvent](https://api.dartlang.org/apidocs/channels/stable/dartdoc-viewer/dart-dom-html.CustomEvent) will be fired on the element. This event can be handled outside of the element with: `<risk-modal on-close="...">`.
+* By clicking on the _close button_ a [CustomEvent](https://api.dartlang.org/apidocs/channels/stable/dartdoc-viewer/dart:html.CustomEvent) will be fired on the element. This event can be handled outside of the element with: `<risk-modal on-close="...">`.
 
 To test this new behaviour add `closable="{{ true }}" on-close="{{ close }}"` in `web/game.html` and `close(CustomEvent e, var detail, Element target) => target.remove();` in `web/game.dart`. Run in Dartium.
 
@@ -308,9 +308,9 @@ class RiskRegistration extends PolymerElement {
 
 Key information:
 * The `?=` syntax in `disabled?="{{ !isValid }}"` allows to make the presence of `disabled` conditionnal to the expression provided.
-* `#name` is equivalent to `const Symbol('name')`. A [Symbol](https://api.dartlang.org/apidocs/channels/stable/dartdoc-viewer/dart-core.Symbol) object represents an operator or identifier declared in a Dart program (mainly needed for minification).
-* [onPropertyChange](https://api.dartlang.org/apidocs/channels/stable/dartdoc-viewer/observe/observe#id_onPropertyChange) is used to observe changes on a particular member and to trigger actions.
-* [notifyPropertyChange](https://api.dartlang.org/apidocs/channels/stable/dartdoc-viewer/observe/observe.Observable#id_notifyPropertyChange) is used to inform that the field name of this object has been changed.
+* `#name` is equivalent to `const Symbol('name')`. A [Symbol](https://api.dartlang.org/apidocs/channels/stable/dartdoc-viewer/dart:core.Symbol) object represents an operator or identifier declared in a Dart program (mainly needed for minification).
+* [onPropertyChange](http://www.dartdocs.org/documentation/observe/0.12.2/index.html#observe/observe@id_onPropertyChange) is used to observe changes on a particular member and to trigger actions.
+* [notifyPropertyChange](http://www.dartdocs.org/documentation/observe/0.12.2/index.html#observe/observe.Observable@id_notifyPropertyChange) is used to inform that the field name of this object has been changed.
 * `notifyIsValid` is an inline function only available in the constructor. It's like defining `var notifyIsValid = () => notifyPropertyChange(#isValid, null, isValid);`.
 
 ### Submitting form

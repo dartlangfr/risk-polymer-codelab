@@ -135,7 +135,7 @@ final List<Country> COUNTRIES = [//
   new Country('siam', ['india', 'china', 'indonesia']), //
   new Country('siberia', ['yakursk', 'irkutsk', 'mongolia', 'china', 'ural']), //
   new Country('yakursk', ['kamchatka', 'siberia', 'irkutsk', 'eastern_australia']),//
-  new Country('eastern_australia', ['western_australia', 'new_guinea', 'eastern_australia']), //
+  new Country('indonesia', ['siam', 'new_guinea', 'western_australia']), //
 ];
 
 /// All [Country]s indexed by country id
@@ -213,7 +213,7 @@ Open `test/s2_classes_test.dart`.
 
 ### Learn more
  - [Dart Language - Classes](https://www.dartlang.org/docs/dart-up-and-running/contents/ch02.html#classes)
- - [Dart Language - Documentation Comments](https://www.dartlang.org/docs/dart-up-and-running/contents/ch02.html#comments-doc)
+ - [Dart Language - Documentation Comments](https://www.dartlang.org/docs/dart-up-and-running/ch02.html#documentation-comments)
  - [Unit Testing with Dart](https://www.dartlang.org/articles/dart-unit-tests/)
 
 ### Problems?

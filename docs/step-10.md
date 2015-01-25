@@ -115,7 +115,7 @@ You finish this codelab. Enjoy your job and play Risk with your friends :)
 &rarr; **Launch Dartium** with the url http://localhost:3000
 
 ### Learn more
- - [Polymer.dart](https://www.dartlang.org/polymer-dart/)
+ - [Polymer.dart - Creating Elements](https://www.dartlang.org/polymer/creating-elements/)
  - [Polymer expressions](https://pub.dartlang.org/packages/polymer_expressions)
  
 ### Problems?

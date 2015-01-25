@@ -260,7 +260,7 @@ Key information:
 * `@published` also means that it is observable, so it allows to uses live two-way data binding to synchronize DOM nodes and object models.
 
 ### Learn more
- - [Polymer.dart](https://www.dartlang.org/polymer-dart/)
+ - [Polymer.dart - Creating Elements](https://www.dartlang.org/polymer/creating-elements/)
  - [Polymer project](http://www.polymer-project.org/)
  - [A Guide to Styling Elements](http://www.polymer-project.org/articles/styling-elements.html)
  - [Custom elements](http://w3c.github.io/webcomponents/spec/custom/)

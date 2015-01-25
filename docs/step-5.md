@@ -186,8 +186,8 @@ Key information:
 * The `tokenList` filter is useful for binding to the class attribute. It allows you to dynamically set/remove class names based on the object passed to it. If the object key is truthy, the name will be applied as a class.
 
 ### Learn more
- - [Polymer.dart](https://www.dartlang.org/polymer-dart/)
- - [Polymer templates](https://www.dartlang.org/polymer-dart/#template-conditionals)
+ - [Polymer.dart - Creating Elements](https://www.dartlang.org/polymer/creating-elements/)
+ - [Polymer templates](https://www.dartlang.org/polymer/creating-elements/#template-conditionals)
  - [Polymer expressions](https://pub.dartlang.org/packages/polymer_expressions)
 
 ### Problems?

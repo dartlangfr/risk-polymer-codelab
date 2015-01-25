@@ -11,7 +11,7 @@ _**Keywords**: main, pub, Dartium, Polymer_
 ### Use Dart Editor to open the app's directories
 
 &rarr;  In Dart Editor, use **File > Open Existing Folder...**
-to open the directory `risk-polymer-codelab-master/samples/s1_basics`.
+to open the directory **`risk-polymer-codelab-master/samples/s1_basics`**.
 
 &rarr;  Open the `bin` and `web` directories by
 clicking the little arrow ► to the left of their name.

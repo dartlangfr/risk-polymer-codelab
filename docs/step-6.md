@@ -168,7 +168,7 @@ Key information:
   - An `Event` that contains information about the event, such as its type and when it occurred.
   - The `detail` object can provide additional, event-specific information.
   - The `Element` that fired the event.
-* `data-country` is an custom data attribute. [Element.dataset](https://api.dartlang.org/docs/channels/stable/latest/dart_html/Element.html#dataset) allows access to all custom data attributes (data-*) set on this element.
+* `data-country` is an custom data attribute. [Element.dataset](https://api.dartlang.org/apidocs/channels/stable/dartdoc-viewer/dart:html.Element#id_dataset) allows access to all custom data attributes (data-*) set on this element.
 
 ### Display player colors and armies in place
 
@@ -336,8 +336,8 @@ Key information:
 
 ### Learn more
  - [SVG](http://www.w3.org/Graphics/SVG/)
- - [HttpRequest](https://api.dartlang.org/apidocs/channels/stable/dartdoc-viewer/dart-dom-html.HttpRequest)
- - [Future](https://api.dartlang.org/apidocs/channels/stable/dartdoc-viewer/dart-async.Future)
+ - [HttpRequest](https://api.dartlang.org/apidocs/channels/stable/dartdoc-viewer/dart:html.HttpRequest)
+ - [Future](https://api.dartlang.org/apidocs/channels/stable/dartdoc-viewer/dart:async.Future)
  - [Use Future-Based APIs](https://www.dartlang.org/docs/tutorials/futures/)
  - [Futures and Error Handling](https://www.dartlang.org/articles/futures-and-error-handling/)
  

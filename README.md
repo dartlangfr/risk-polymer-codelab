@@ -4,7 +4,7 @@ Code Lab: Polymer.dart
 Polymer.Dart is the Dart version of Polymer Project, a client-side library that uses the latest web technologies to let you create custom HTML elements. Build anything from a button to a complete application as an encapsulated, reusable element that works across desktop and mobile.
 
 In this one-hour code lab, you'll create a [risk game](docs/rules.md#risk-game-rules) composed of a Web Socket server and an Polymer.Dart web app.  
-_It's a shorter version of [https://github.com/dartlangfr/risk-codelab](https://github.com/dartlangfr/risk-codelab/blob/master/README.md#code-lab-polymerdart)._
+_It's a shorter version of [Risk Codelab](https://github.com/dartlangfr/risk-codelab/blob/master/README.md#code-lab-polymerdart)._
 
 Try the [live demo](http://dartlangfr-risk.herokuapp.com).
 
@@ -25,6 +25,8 @@ This code lab has the following sections:
 * [Step 7: Player enrollment](docs/step-7.md#step-7-player-enrollment)
 * [Step 10: Put it all together](docs/step-10.md#step-10-put-it-all-together)
 
+_Note: missing steps are available in the full [Risk Codelab](https://github.com/dartlangfr/risk-codelab/blob/master/README.md#code-lab-polymerdart)._
+
 ### Slides
 
 - [DevoxxFR 2014 - The Dart side of disruption](http://dartlangfr.net/devoxxfr-2014-codelab-slides)
@@ -35,7 +37,7 @@ This code lab has the following sections:
 - [A Tour of the Dart Language][2]
 - [Dart API Reference][3]
 - [Polymer.dart][4]
-- [Polymer.dart examples][5]
+- [Polymer Snippets][5]
 - [Polymer JavaScript project][6]
 
 
@@ -56,6 +58,6 @@ _Thanks to the [+DartlangFr](http://gplus.to/dartlangfr) team._
   [2]: https://www.dartlang.org/docs/dart-up-and-running/contents/ch02.html
   [3]: http://api.dartlang.org/docs/channels/stable/latest/
   [4]: https://www.dartlang.org/polymer-dart/
-  [5]: https://github.com/sethladd/dart-polymer-dart-examples/tree/master/web
+  [5]: https://github.com/dart-lang/polymer-dart-patterns
   [6]: http://www.polymer-project.org/
   [feedback]: TODO
