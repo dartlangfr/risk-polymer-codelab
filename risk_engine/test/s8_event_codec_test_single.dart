@@ -2,7 +2,6 @@ library risk.event_codec.test;
 
 import 'package:unittest/unittest.dart';
 import 'package:risk_engine/risk_engine.dart';
-import '../lib/risk.dart';
 
 main() {
   test('serializable', () {

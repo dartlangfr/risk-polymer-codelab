@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:morph/morph.dart';
 import 'package:unittest/unittest.dart';
 import 'package:risk_engine/risk_engine.dart';
-import '../lib/risk.dart';
 
 /*
  * Assert equality between [actual] and [expected] by reflection.
