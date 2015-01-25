@@ -24,11 +24,11 @@ button on the Dart homepage.
 
 ###  Get the sample code
 
-&rarr; [Download the sample code.](https://github.com/dartlangfr/risk-codelab/archive/master.zip)
+&rarr; [Download the sample code.](https://github.com/dartlangfr/risk-polymer-codelab/archive/master.zip)
 
 &rarr; Unzip the ZIP file.
 
-You should now have a directory called `risk-codelab-master`.
+You should now have a directory called `risk-polymer-codelab-master`.
 
 
 ## [Home](../README.md#code-lab-polymerdart) | [Next >](step-1.md#step-1-run-the-app-and-view-its-code)

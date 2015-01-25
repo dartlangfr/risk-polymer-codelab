@@ -3,7 +3,8 @@ Code Lab: Polymer.dart
 
 Polymer.Dart is the Dart version of Polymer Project, a client-side library that uses the latest web technologies to let you create custom HTML elements. Build anything from a button to a complete application as an encapsulated, reusable element that works across desktop and mobile.
 
-In this two-hour code lab, you'll create a [risk game](docs/rules.md#risk-game-rules) composed of a Web Socket server and an Polymer.Dart web app.
+In this one-hour code lab, you'll create a [risk game](docs/rules.md#risk-game-rules) composed of a Web Socket server and an Polymer.Dart web app.  
+_It's a shorter version of [https://github.com/dartlangfr/risk-codelab](https://github.com/dartlangfr/risk-codelab/blob/master/README.md#code-lab-polymerdart)._
 
 Try the [live demo](http://dartlangfr-risk.herokuapp.com).
 

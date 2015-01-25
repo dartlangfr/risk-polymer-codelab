@@ -1,7 +1,7 @@
 ## Step 1: Run the app, and view its code
 
 In this step, you open the source files for the first version of the
-app under `risk-codelab-master`.
+app under `risk-polymer-codelab-master`.
 After familiarizing yourself with the app's code,
 you run the app.
 
@@ -11,7 +11,7 @@ _**Keywords**: main, pub, Dartium, Polymer_
 ### Use Dart Editor to open the app's directories
 
 &rarr;  In Dart Editor, use **File > Open Existing Folder...**
-to open the directory `risk-codelab-master/samples/s1-basics`.
+to open the directory `risk-polymer-codelab-master/samples/s1_basics`.
 
 &rarr;  Open the `bin` and `web` directories by
 clicking the little arrow ► to the left of their name.

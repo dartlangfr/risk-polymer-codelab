@@ -269,6 +269,6 @@ Key information:
  - [HTML Imports](http://w3c.github.io/webcomponents/spec/imports/)
 
 ### Problems?
-Check your code against the files in [s4_element](../samples/s4_element) ([diff](../../../compare/s3_game...s4_element)).
+Check your code against the files in [s4_element](../samples/s4_element) ([diff](../../../compare/s2_classes...s4_element)).
 
-## [Home](../README.md#code-lab-polymerdart) | [< Previous](step-3.md#step-3-risk-game) | [Next >](step-5.md#step-5-polymer-templates)
+## [Home](../README.md#code-lab-polymerdart) | [< Previous](step-2.md#step-2-dart-classes) | [Next >](step-5.md#step-5-polymer-templates)
