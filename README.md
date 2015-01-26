@@ -28,7 +28,7 @@ _Note: missing steps are available in the full [Risk Codelab](https://github.com
 
 ### Slides
 
-- [DevoxxFR 2014 - The Dart side of disruption](http://dartlangfr.net/devoxxfr-2014-codelab-slides)
+- [DevFest Paris 2015 - The Dart side of disruption](http://dartlangfr.github.io/conferences/2015-01-30/)
 
 ### Useful links
 
