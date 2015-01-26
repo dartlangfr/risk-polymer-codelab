@@ -1,196 +1,347 @@
-## Step 5: Polymer templates
+## Step 5: Risk board
 
-In this step, you use more binding expressions, filter function and templates.
+In this step, you build a board map updated by the game state model.
 
-_**Keywords**: binding, filter function, conditional template, template loop_
+_**Keywords**: SVG, HttpRequest, Future, event handler_
 
 ### Create a `risk-players` element
 
 Create a new custom element, as follows.
 
-&rarr; Create a new file `web/players.html`.
+&rarr; Create a new file `web/board.html`, with the following content:
 
 ```HTML
 <link rel="import" href="packages/polymer/polymer.html">
 
-<polymer-element name="risk-players">
+<polymer-element name="risk-board">
   <template>
     <link rel="stylesheet" href="css/risk.css">
-    <link rel="stylesheet" href="packages/bootstrap_for_pub/3.1.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="packages/bootstrap_for_pub/3.1.0/css/bootstrap-theme.min.css">
+    <style>
+      .country {
+        stroke: black;
+        stroke-width: 1;
+      }
 
-    <ul id="players" class="list-group list-group-inverse img-rounded">
-      <li class="list-group-item">
-        <!-- In the following tag, bind player avatar and color -->
-        <img src="img/avatars/castro.png" style="border-color: green" class="img-rounded" alt="Avatar">
-        <!-- Bind here player name -->
-        <span><b>Paul McCartney</b></span>
-        <span class="badge pull-right">
-          <i class="riskicon riskicon-soldier"></i>
-          <i class="riskicon riskicon-soldier"></i>
-          <!-- Bind here player reinforcement -->
-          2
-        </span>
-      </li>
-    </ul>
+      .country:hover {
+        stroke-width: 2;
+      }
+
+      .selected .country {
+        stroke-width: 2;
+        fill: red;
+      }
+
+      .selectable {
+        cursor: pointer;
+      }
+
+      .selectable .country {
+        animation-duration: 1s;
+        animation-name: highlight;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+      }
+    </style>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+      viewBox="0 0 800 540" width="100%" height="90%">
+      
+      <!-- TODO: iterate here to display country contours -->
+      
+    </svg>
   </template>
-  <script type="application/dart" src="players.dart"></script>
+  <script type="application/dart" src="board.dart"></script>
 </polymer-element>
+
 ```
 
-&rarr; Create a new file `web/players.dart`.
+&rarr; Create a new file `web/board.dart`, with the following content:
 
 ```Dart
+import 'dart:convert';
+import 'dart:html';
+
 import 'package:polymer/polymer.dart';
-import 'package:risk_engine/risk_engine.dart';
 import 'package:risk/risk.dart';
+import 'package:risk_engine/client.dart';
+import 'package:risk_engine/snapshot.dart';
 
-@CustomTag('risk-players')
-class RiskPlayers extends PolymerElement {
-  PlayerState player = new PlayerStateImpl(2, "John Lennon", "kadhafi.png", "blue", reinforcement: 2);
+@CustomTag('risk-board')
+class RiskBoard extends PolymerElement {
+  @observable
+  Map<String, Map> paths;
 
-  RiskPlayers.created(): super.created();
+  RiskBoard.created(): super.created() {
+    HttpRequest.getString('res/country-paths.json').then(JSON.decode).then(toObservable).then((e) => paths = e);
+  }
 }
 ```
 
-&rarr; In the element template, bind the `player` fields to see his `name`, his `avatar`, his `color` and his `reinforcement` number. Follow this example:
+Key information:
+* Styles are already defined: `country`, `selected`, `selectable` define specific appearance on the country contours when the mouse is over, or when the country is selected or selectable.
+* In the `RiskBoard.created()` constructor, country data are read from a json file. This file contains country contour paths and optimal center.
+  * `HttpRequest` is a utility for retrieving data from a URL.
+  * `getString()` is a convenience method for doing a simple GET request that returns a string.
+  * The code uses a `Future` to perform the GET asynchronously.
+  * The callback function for `.then()` is called when the Future completes successfully.
+  * When the `Future` completes successfully, the json content is read then set to the `paths` field.
+* `@observable` specifies that `paths` is an observable property for use in Model-Driven-Views (MDV). Updates to the model are reflected in the DOM and user input into the DOM is immediately assigned to the model.
+* `toObservable()` converts a `Map` to an `ObservableMap`. This is needed for the compiled JavaScript version, to be able to bind on the `Map.keys` property.
+
+### Draw country contours
+
+&rarr; Have a look to the loaded json file `web/res/country-paths.json`:
+
+```Json
+{
+  "eastern_australia": {
+    "path": "M 682.08791,409.72925 C ...",
+    "center": {
+      "x": 720,
+      "y": 430
+    }
+  },
+  "indonesia": { ... },
+  ...
+}
+```
+
+The first level key, e.g. `eastern_australia`, is the `countryId`. Its value contains data about the country:
+* `path` is the country contour path.
+* `center` is the coordinates of the optimal center. Later in this step, we will display armies number at this position.
+
+&rarr; Use a template loop to iterate over the `countryId in paths.keys` with the following template:
 
 ```HTML
-<span><b>{{player.name}}</b></span>
+<g>
+  <path class="country" d="{{ paths[countryId]['path'] }}" fill="white"></path>
+</g>
 ```
 
 &rarr; Import this new component in `web/index.html` and use its tag.  
 &rarr; Run in Dartium
 
-You should see something like:
+You should see something like the following screenshot and mouse over on a country should increase its stroke width:
 
-![Single player](img/s5-player.png).
+![Countries](img/s6-countries-empty.png).
 
 Key information:
-* Properties on the model and in the scope are looked up via simple property names, like `{{player}}`. Property names are looked up first in the top-level variables, next in the model, then recursively in parent scopes. Properties on objects can be access with dot notation like `{{player.name}}`.
-* Polymer expressions allow you to write complex binding expressions, with property access, function invocation, list/map indexing, and two-way filtering like.
-* For more information about Polymer expressions, see the [Polymer expressions documentation](https://pub.dartlang.org/packages/polymer_expressions).
+* List and Map like objects can be accessed via the index operator: `[]`.
+* Unlike JavaScript, list and map contents are not generally available via property access. That is, the previous examples are not equivalent to `paths.indonesia.path`. This ensures that access to properties and methods on Lists and Maps is preserved.
 
-### Filter function
+### Click on country
 
-Filters let you change how your model data is displayed in the view without changing the model data itself. 
-For example, they're useful for showing parts of a model's data, or displaying data in a particular format.
-You can also easily create and use your own filters, as the following instructions show how to capitalize player name.
-
-&rarr; Add a `capitalize` filter function in `web/players.dart`:
+&rarr; In `web/board.dart`, add a new `selectedCountryId` field.  
+&rarr; Add a click handler that sets the `selectedCountryId` to the clicked country id:
 
 ```Dart
-class RiskPlayers extends PolymerElement {
+class RiskBoard extends PolymerElement {
   // ...
-  String capitalize(String s) => s.toUpperCase();
+  @observable
+  String selectedCountryId;
+
+  countrySelect(Event e, var detail, Element target) {
+    selectedCountryId = target.dataset['country'];
+  }
   // ...
 }
 ```
 
-&rarr; Use it to capitalize the player `name` in `web/players.html`:
+&rarr; In `web/board.html`, bind `countrySelect` handler to the `on-click` event.  
+&rarr; Complete `class` binding to add `selected` CSS class if the country is selected.
 
 ```HTML
-<span><b>{{player.name | capitalize}}</b></span>
+<g on-click="{{ countrySelect }}" data-country="{{ countryId }}" 
+  class="{{ ... }}">
+  <path class="country" d="{{ paths[countryId]['path'] }}" fill="white"></path>
+</g>
 ```
 
 &rarr; Run in Dartium
 
-You should see the capitalized player name:
+You should be able to select a country when clicking on it:
 
-![Single capitalized player](img/s5-player-uppercase.png).
-
-Key information:
-* A filter is a function that transforms a value into another, used via the pipe syntax: `value | filter`. Any function that takes exactly one argument can be used as a filter.
-* The top-level function named `capitalize` is in the scope so if `player.name` is "John Lennon", then `person.name | capitalize` will have the value "JOHN LENNON".
-
-### Conditional template
-
-We want to display soldier icons in function of the number of player reinforcement:
-
-- ![!](img/soldier.png): if `reinforcement` is less or equal than `1`
-- ![!](img/soldier.png)![!](img/soldier.png): if `reinforcement` is equal to `2`
-- ![!](img/soldier.png)![!](img/soldier.png)![!](img/soldier.png): if `reinforcement` is greater or equal than `3`
-
-&rarr; In `web/players.html`, use conditional templates:
-
-```HTML
-<span class="badge pull-right">
-  <i class="riskicon riskicon-soldier"></i>
-  <!-- TODO complete the if expression -->
-  <template if="{{ ... }}">
-    <i class="riskicon riskicon-soldier"></i>
-  </template>
-  <!-- TODO complete the if expression -->
-  <template if="{{ ... }}">
-    <i class="riskicon riskicon-soldier"></i>
-  </template>
-  {{ player.reinforcement }}
-</span>
-```
-
-&rarr; Complete the `if` conditions with the right expressions.  
-&rarr; Run in Dartium, and try to change the value of player `reinforcement`.
+![Countries](img/s6-countries-selected.png).
 
 Key information:
-* Control the UI with declarative conditional `if` templates.
-* Template conditionals are part of the data binding infrastructure. If `player.reinforcement` changes, the templates are automatically re-evaluated.
+* An event handler is a three parameter method defined in the custom element class (See  [Event Handlers](https://www.dartlang.org/docs/tutorials/polymer-intro/#event-handlers))  
+  `myEventHandler(Event e, var detail, Element target)`
+  - An `Event` that contains information about the event, such as its type and when it occurred.
+  - The `detail` object can provide additional, event-specific information.
+  - The `Element` that fired the event.
+* `data-country` is an custom data attribute. [Element.dataset](https://api.dartlang.org/apidocs/channels/stable/dartdoc-viewer/dart:html.Element#id_dataset) allows access to all custom data attributes (data-*) set on this element.
 
-### Template loop
+### Display player colors and armies in place
 
-We want to display a list of players.
-
-&rarr; In `web/players.dart`, remove the `player` field and add two new published fields, `players` and `activePlayerId`:
+&rarr; In `web/board.dart`, add a new published `game` field.  
+&rarr; Implement a function `color` that returns the player color:
 
 ```Dart
-class RiskPlayers extends PolymerElement {
-  // We don't need player field anymore
-  // PlayerState player = new PlayerStateImpl(2, "John Lennon", "kadhafi.png", "blue", reinforcement: 2);
-
+class RiskBoard extends PolymerElement {
+  // ...
   @published
-  Iterable<PlayerState> players = [
-    new PlayerStateImpl(1, "Paul McCartney", "castro.png", "green", reinforcement: 0),
-    new PlayerStateImpl(2, "John Lennon", "kadhafi.png", "blue", reinforcement: 2),
-    new PlayerStateImpl(3, "Ringo Starr", "staline.png", "yellow", reinforcement: 1),
-    new PlayerStateImpl(4, "George Harrison", "kim-jong-il.png", "red", reinforcement: 4),
-  ];
+  RiskGameState game = loadEventsSync(new RiskGameStateImpl(), SNAPSHOT_GAME_ATTACK);
 
-  @published
-  int activePlayerId = 2;
+  // TODO: return the player color, white if the playerId is null
+  String color(int playerId) => "white";
   // ...
 }
 ```
 
-&rarr; In `web/players.html`, use conditional loop to iterate over `players`:
+&rarr; In `web/board.html`, bind `fill` attribute with player color who own the country.  
+&rarr; Complete `class` binding to add `selected` CSS class if the country is selected.
 
 ```HTML
-<ul id="players" class="list-group list-group-inverse img-rounded">
-  <template repeat="{{ player in players }}">
-    <!-- Complete the following tokenList filter to enable `active` class if it is the active player -->
-    <li class="list-group-item {{ {'active': ...} }}">
-      <!-- ... -->
-    </li>
-  </template>
-</ul>
+<g on-click="{{ countrySelect }}" data-country="{{ countryId }}"
+  class="{{ {'selected': countryId == selectedCountryId} }}">
+  <path class="country" d="{{ paths[countryId]['path'] }}" 
+    fill="{{ color(game.countries[countryId].playerId) }}"></path>
+  <!-- Armies number -->
+  <g transform="translate({{ paths[countryId]['center']['x'] }}, {{ paths[countryId]['center']['y'] }})">
+    <circle cx="0" cy="0" r="8" stroke="black" stroke-width="1" fill="white" />
+    <!-- TODO: complete binding to get country armies number -->
+    <text text-anchor="middle" font-size="10" x="0" y="3">{{ ... }}</text>
+  </g>
+</g>
 ```
-
-&rarr; Complete the [`tokenList` filter](http://www.polymer-project.org/docs/polymer/filters.html#tokenlist) to enable `active` class if it is the active player in function of `activePlayerId` value.  
-&rarr; Run in Dartium.
+&rarr; Run in Dartium
 
 You should see something like:
 
-![Players list](img/s5-players.png).
+![Countries](img/s6-countries-color.png).
 
 Key information:
-* `{{ player in players }}` loops through a collection, instantiating a template for every item in the collection.
-* Template loops are part of the data binding infrastructure. If an item is added or removed from `players`, the contents of `<ul>` are automatically updated.
-* The `tokenList` filter is useful for binding to the class attribute. It allows you to dynamically set/remove class names based on the object passed to it. If the object key is truthy, the name will be applied as a class.
+* `loadEventsSync(new RiskGameStateImpl(), SNAPSHOT_GAME_ATTACK)` loads a game state from the events history `SNAPSHOT_GAME_ATTACK` synchronously. 
+  It means that the instance of `RiskGameStateImpl` is completely updated with the events history when the `game` field is instantiated.
+
+### Events stream
+
+During the game, the instance `RiskGameState` will be continuously updated by an event stream coming from server game engine.
+
+&rarr; To simulate an incoming event stream, change the `loadEventsSync` call by the call of `loadEventsAsync`:
+
+```Dart
+RiskGameState game = loadEventsAsync(new RiskGameStateImpl(), SNAPSHOT_GAME_ATTACK);
+```
+
+&rarr; Run in Dartium
+
+The map countries should stay blank. In deed, `@published` or `@observable` annotations do not observe deeply in the instance, only the changes of the variable.
+To be able to observe the fields changes in the object, we have to update the models as follows:
+
+&rarr; Edit `lib/risk.dart` and add a new import:
+
+```Dart
+import 'package:observe/observe.dart';
+```
+
+&rarr; Edit `lib/src/game.dart` and make `CountryStateImpl`, `PlayerStateImpl` and `RiskGameStateImpl` observable:
+
+```Dart
+class CountryStateImpl extends Object with Observable implements CountryState {
+  final String countryId;
+  @observable int playerId;
+  @observable int armies;
+  // ...
+}
+
+class PlayerStateImpl extends Object with Observable implements PlayerState {
+  final int playerId;
+  String name;
+  String avatar;
+  String color;
+  @observable int reinforcement;
+  @observable bool dead;
+
+  // ...
+}
+
+class RiskGameStateImpl extends Object with Observable implements RiskGameState {
+  Map<String, CountryStateImpl> countries = toObservable({});
+  Map<int, PlayerStateImpl> players = toObservable({});
+  @observable List<int> playersOrder = [];
+  @observable int activePlayerId;
+
+  @observable bool started = false;
+  @observable bool setupPhase = false;
+  @observable String turnStep;
+
+  List<EngineEvent> events = toObservable([]);
+
+  // ...
+}
+```
+&rarr; Run in Dartium
+
+You should see progressively the board updated:
+
+![Countries](img/s6-countries-building.png).
+
+Key information:
+* `loadEventsSync(new RiskGameStateImpl(), SNAPSHOT_GAME_ATTACK)` loads a game state from the events history `SNAPSHOT_GAME_ATTACK` asynchronously. It sends a new event to the game state every 50ms.
+  It means that the instance of `RiskGameStateImpl` is updated on a continuous-flow of events.
+* `Observable` represents an object with observable properties. This is used by data in model-view architectures to notify interested parties of changes to the object's properties (fields or getter/setter pairs). The `with` clause is the way to do [Mixins](https://www.dartlang.org/articles/mixins/) in Dart.
+* `toObservable()` converts the `List` or `Map` to an `ObservableList` or `ObservableMap`, respectively. This is a convenience function to make it easier to convert literals into the corresponding observable collection type.
+* `notifyPropertyChange` notifies that a field of the object has been changed.
+* All fields that are suppposed to change during the game (particularly in `RiskGameStateImpl.update` function) are marked with the `@observable`annotation. So updates to the model are reflected in the DOM.
+
+### Selectable and complex logic
+
+To make this exercise easier, we provide to you the complex logic in a class to extend. It brings selectable and click logic.
+
+Edit `web/board.dart` and `web/board.html`, as follows:
+
+&rarr; In `web/board.dart`, extend the element with the given `AbstractRiskBoardElement` class:
+
+```Dart
+class RiskBoard extends AbstractRiskBoardElement {
+  // ...
+}
+```
+
+&rarr; In `web/board.html`, copy and paste the following code:
+
+```HTML
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  viewBox="0 0 800 540" width="100%" height="90%">
+  <!-- Background image -->
+  <image xlink:href="img/board.svg" width="100%" height="100%" />
+
+  <template repeat="{{ countryId in paths.keys }}">
+    <g on-click="{{ countryClick }}" data-country="{{ countryId }}"
+      class="{{ {'selected': countryId == selectedCountryId, 'selectable': selectableCountry(countryId, game.activePlayerId, game.turnStep, selectedCountryId)} }}">
+      <path class="country" d="{{ paths[countryId]['path'] }}"
+        fill="{{ color(game.countries[countryId].playerId) }}">
+      </path>
+      <!-- Armies number -->
+      <template if="{{ game.countries[countryId].armies > 0 }}">
+        <g transform="translate({{ paths[countryId]['center']['x'] }},{{ paths[countryId]['center']['y'] }})">
+          <circle cx="0" cy="0" r="8" stroke="black" stroke-width="1" fill="white" />
+          <text text-anchor="middle" font-size="10" x="0" y="3">{{ game.countries[countryId].armies }}</text>
+        </g>
+      </template>
+    </g>
+  </template>
+</svg>
+```
+&rarr; Run in Dartium
+
+You should see something like with highlighted selectable countries:
+
+![Countries](img/s6-countries-highlight.png).
+
+Key information:
+* `<image xlink:href="img/board.svg" ... />` is a background image that adds sea-lane and colored continent shadow.
+* `countryClick` now handles country click. It has more logic depending on the game state and selected country.
+* `selectable` highlights selectable countries depending on the game state and selected country.
 
 ### Learn more
- - [Polymer.dart - Creating Elements](https://www.dartlang.org/polymer/creating-elements/)
- - [Polymer templates](https://www.dartlang.org/polymer/creating-elements/#template-conditionals)
- - [Polymer expressions](https://pub.dartlang.org/packages/polymer_expressions)
-
+ - [SVG](http://www.w3.org/Graphics/SVG/)
+ - [HttpRequest](https://api.dartlang.org/apidocs/channels/stable/dartdoc-viewer/dart:html.HttpRequest)
+ - [Future](https://api.dartlang.org/apidocs/channels/stable/dartdoc-viewer/dart:async.Future)
+ - [Use Future-Based APIs](https://www.dartlang.org/docs/tutorials/futures/)
+ - [Futures and Error Handling](https://www.dartlang.org/articles/futures-and-error-handling/)
+ 
 ### Problems?
-Check your code against the files in [s5_template](../samples/s5_template) ([diff](../../../compare/s4_element...s5_template)).
+Check your code against the files in [s5_board](../samples/s5_board) ([diff](../../../compare/s4_template...s5_board)).
 
-## [Home](../README.md#code-lab-polymerdart) | [< Previous](step-4.md#step-4-polymer-custom-element) | [Next >](step-6.md#step-6-risk-board)
+## [Home](../README.md#code-lab-polymerdart) | [< Previous](step-4.md#step-4-polymer-templates) | [Next >](step-6.md#step-6-put-it-all-together)

@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-STEPS=(s1_basics s2_classes s4_element s5_template s6_board s10_alltogether)
+STEPS=(s1_basics s2_classes s3_element s4_template s5_board s6_alltogether)
 MAX_PROCS=${MAX_PROCS:=1}
 
 # $0..N-1 pub parameters to run

@@ -3,7 +3,7 @@
 REMOTE=$1 
   : ${REMOTE:=origin}
 FIRST_STEP=s1_basics
-STEPS=(s1_basics s2_classes s4_element s5_template s6_board s10_alltogether)
+STEPS=(s1_basics s2_classes s3_element s4_template s5_board s6_alltogether)
 
 # $1 branch name
 function create_branch() {

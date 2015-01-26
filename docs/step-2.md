@@ -219,4 +219,4 @@ Open `test/s2_classes_test.dart`.
 ### Problems?
 Check your code against the files in [s2_classes](../samples/s2_classes) ([diff](../../../compare/s1_basics...s2_classes)).
 
-## [Home](../README.md#code-lab-polymerdart) | [< Previous](step-1.md#step-1-run-the-app-and-view-its-code) | [Next >](step-4.md#step-4-polymer-custom-element)
+## [Home](../README.md#code-lab-polymerdart) | [< Previous](step-1.md#step-1-run-the-app-and-view-its-code) | [Next >](step-3.md#step-3-polymer-custom-element)

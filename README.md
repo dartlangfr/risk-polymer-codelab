@@ -19,12 +19,10 @@ This code lab has the following sections:
 * [Step 0: Set up](docs/step-0.md#step-0-set-up)
 * [Step 1: Basics](docs/step-1.md#step-1-run-the-app-and-view-its-code)
 * [Step 2: Classes](docs/step-2.md#step-2-dart-classes)
-* [Step 4: First custom element](docs/step-4.md#step-4-polymer-custom-element)
-* [Step 5: Players list](docs/step-5.md#step-5-polymer-templates)
-* [Step 6: Map](docs/step-6.md#step-6-risk-board)
-* [Step 10: Put it all together](docs/step-10.md#step-10-put-it-all-together)
-
-_Note: missing steps are available in the full [Risk Codelab](https://github.com/dartlangfr/risk-codelab/blob/master/README.md#code-lab-polymerdart)._
+* [Step 3: First custom element](docs/step-3.md#step-3-polymer-custom-element)
+* [Step 4: Players list](docs/step-4.md#step-4-polymer-templates)
+* [Step 5: Map](docs/step-5.md#step-5-risk-board)
+* [Step 6: Put it all together](docs/step-6.md#step-6-put-it-all-together)
 
 ### Slides
 

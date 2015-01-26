@@ -1,274 +1,196 @@
-## Step 4: Polymer custom element
+## Step 4: Polymer templates
 
-In this step, you create a custom element that lets you use a `<hello-world>` tag anywhere in your app. 
-You also specify element-defined style and expose an custom element attribute.
+In this step, you use more binding expressions, filter function and templates.
 
-_**Keywords**: custom element, Shadow DOM, custom attribute, binding_
+_**Keywords**: binding, filter function, conditional template, template loop_
 
+### Create a `risk-players` element
 
-### Bootstrap Polymer
+Create a new custom element, as follows.
 
-Edit `web/index.html`, as follows.
-
-```HTML
-<html>
-  <head>
-    <!-- ... -->
-
-    <!-- Polymer bootstrap -->
-    <script type="application/dart">export 'package:polymer/init.dart';</script>
-  </head>
-  <body>
-```
-
-Key information:
-* The first `<script>` tag automatically initializes polymer elements without 
-  having to write a main for your application.
-* When run in browser, the `index.html` file loads the app and calls the `main()` function in `package:polymer/init.dart` script.
-
-### Add a basic custom element
-
-Continue to edit `web/index.html`.
-
-&rarr; Declare a custom element named `hello-world`.
+&rarr; Create a new file `web/players.html`.
 
 ```HTML
-<html>
-  <head>
-    <!-- import polymer-element's definition -->
-    <link rel="import" href="packages/polymer/polymer.html">
-    <!-- ... -->
-  </head>
-  <body>
-    <!-- Declare a custom element named hello-world -->
-    <polymer-element name="hello-world" noscript>
-      <template>
-        <h3>Hello World!</h3>
-      </template>
-    </polymer-element>
-```
-
-&rarr; Use it twice in the HTML code.
-
-```HTML
-<body>
-  <!-- ... -->
-
-  <div>
-    TO DO: Put the UI widgets here.
-    <!-- Use the hello-world custom element -->
-    <hello-world></hello-world>
-    <hello-world></hello-world>
-  </div>
-</body>
-```
-
-&rarr; Run in Dartium `web/index.html`.
-
-You should see twice _"Hello World!"_.
-
-**Got questions? Having trouble?** Ask the organizer team.
-
-Key information:
-* The `polymer-element` tag is the way to declare your custom element.
-* The `name`  attribute is required and **must** contain a `-`. 
-  It specifies the name of the HTML tag you’ll instantiate in markup 
-  (in this case `<hello-world>`).
-* The `noscript` attribute indicates that this is a simple element 
-  that doesn’t include any script. An element declared with noscript 
-  is registered automatically.
-* The `template` tag contains the content of the element. For now,
-  it's static content.
-
-### Add element-defined styles
-
-To add element-defined styles, edit the element in `web/index.html`.
-
-&rarr; Add the following code to declare style:
-
-```HTML
-<polymer-element name="hello-world" noscript>
-  <template>
-    <style>
-      :host {
-        text-align: center;
-      }
-
-      h3 {
-        text-decoration: underline;
-      }
-    </style>
-    <h3>Hello World!</h3>
-  </template>
-</polymer-element>
-```
-
-&rarr; Run in Dartium
-
-You should see centered and underlined _"Hello World!"_.
-
-&rarr; Try to affect the style of the element adding other styles outside of it.
-
-```HTML
-<html>
-  <head>
-    <style>
-      hello-world {
-        text-align: right;
-      }
-      h3 {
-        color: red;
-      }
-    </style>
-  </head>
-```
-
-Key information:
-* `:host` refers to the custom element itself and has the lowest specificity. This allows users to override your styling from the outside.
-* Polymer creates _Shadow DOM_ from the topmost <template> of your <polymer-element> definition, so styles defined internally to your element are scoped to your element. There’s no need to worry about duplicating an id from the outside or using a styling rule that’s too broad.
-
-### Externalize element
-
-Create a new file `web/hello.html`.
-
-&rarr; Move the element declaration from `web/index.html` to `web/hello.html`:
-
-```HTML
-<!-- import polymer-element's definition -->
 <link rel="import" href="packages/polymer/polymer.html">
 
-<polymer-element name="hello-world" noscript>
+<polymer-element name="risk-players">
   <template>
-    <style>
-      /* ... */
-    </style>
-    <h3>Hello World!</h3>
+    <link rel="stylesheet" href="css/risk.css">
+    <link rel="stylesheet" href="packages/bootstrap_for_pub/3.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="packages/bootstrap_for_pub/3.1.0/css/bootstrap-theme.min.css">
+
+    <ul id="players" class="list-group list-group-inverse img-rounded">
+      <li class="list-group-item">
+        <!-- In the following tag, bind player avatar and color -->
+        <img src="img/avatars/castro.png" style="border-color: green" class="img-rounded" alt="Avatar">
+        <!-- Bind here player name -->
+        <span><b>Paul McCartney</b></span>
+        <span class="badge pull-right">
+          <i class="riskicon riskicon-soldier"></i>
+          <i class="riskicon riskicon-soldier"></i>
+          <!-- Bind here player reinforcement -->
+          2
+        </span>
+      </li>
+    </ul>
   </template>
+  <script type="application/dart" src="players.dart"></script>
 </polymer-element>
 ```
 
-&rarr; Import the element with an [HTML Import](http://www.polymer-project.org/platform/html-imports.html).
-
-```HTML
-<html>
-  <head>
-    <!-- ... -->
-
-    <link rel="import" href="hello.html">
-
-    <script type="application/dart">export 'package:polymer/init.dart';</script>
-  </head>
-  <body>
-    <!-- Previous hello-world element declaration is removed -->
-
-    <!-- ... -->
-
-    <div>
-      TO DO: Put the UI widgets here.
-      <!-- Use the hello-world custom element -->
-      <hello-world></hello-world>
-      <hello-world></hello-world>
-    </div>
-  </body>
-</html>
-```
-
-Key information:
-* HTML Imports are a way to include and reuse HTML documents in other HTML documents.
-* For HTML imports use the `import` relation on a standard `<link>` tag.
-
-### Add custom behavior
-
-Create a new file `web/hello.dart`.
-
-&rarr; Add the following code:
+&rarr; Create a new file `web/players.dart`.
 
 ```Dart
 import 'package:polymer/polymer.dart';
+import 'package:risk_engine/risk_engine.dart';
+import 'package:risk/risk.dart';
 
-@CustomTag('hello-world')
-class HelloWorld extends PolymerElement {
-  String name = "You";
+@CustomTag('risk-players')
+class RiskPlayers extends PolymerElement {
+  PlayerState player = new PlayerStateImpl(2, "John Lennon", "kadhafi.png", "blue", reinforcement: 2);
 
-  HelloWorld.created(): super.created();
+  RiskPlayers.created(): super.created();
 }
 ```
 
-&rarr; In `web/hello.html`, remove the `noscript` attribute.  
-&rarr; Add the `script` tag specifying the URL to `hello.dart`.  
-&rarr; Add the binding to the field `name` of `HelloWorld` class:
+&rarr; In the element template, bind the `player` fields to see his `name`, his `avatar`, his `color` and his `reinforcement` number. Follow this example:
 
 ```HTML
-<link rel="import" href="packages/polymer/polymer.html">
-
-<polymer-element name="hello-world">
-  <template>
-    ...
-    <h3>Hello {{name}}!</h3>
-  </template>
-  <script type="application/dart" src="hello.dart"></script>
-</polymer-element>
+<span><b>{{player.name}}</b></span>
 ```
 
+&rarr; Import this new component in `web/index.html` and use its tag.  
 &rarr; Run in Dartium
 
-You should see _"Hello You!"_.
+You should see something like:
+
+![Single player](img/s5-player.png).
 
 Key information:
-* The `script` tag specifies the path to the underlying dart script.
-* Any Polymer element class extends `PolymerElement`.
-* `CustomTag` specifies the name of the element.
-* The `super.created()` constructor must be called in the custom element constructor.
-* `{{name}}` is a Polymer expression. It is bound to the `name` field in `HelloWorld` class.
+* Properties on the model and in the scope are looked up via simple property names, like `{{player}}`. Property names are looked up first in the top-level variables, next in the model, then recursively in parent scopes. Properties on objects can be access with dot notation like `{{player.name}}`.
+* Polymer expressions allow you to write complex binding expressions, with property access, function invocation, list/map indexing, and two-way filtering like.
+* For more information about Polymer expressions, see the [Polymer expressions documentation](https://pub.dartlang.org/packages/polymer_expressions).
 
-### Add custom attribute
+### Filter function
 
-Attributes are a great way for users of your element to configure it, declaratively.
+Filters let you change how your model data is displayed in the view without changing the model data itself. 
+For example, they're useful for showing parts of a model's data, or displaying data in a particular format.
+You can also easily create and use your own filters, as the following instructions show how to capitalize player name.
 
-&rarr; In `web/hello.dart`, add the `@published` annotation to the `name` field:
+&rarr; Add a `capitalize` filter function in `web/players.dart`:
 
 ```Dart
-class HelloWorld extends PolymerElement {
-  @published
-  String name = "You";
+class RiskPlayers extends PolymerElement {
+  // ...
+  String capitalize(String s) => s.toUpperCase();
   // ...
 }
 ```
 
-&rarr; In `web/index.html`, take advantage of the new attribute:
+&rarr; Use it to capitalize the player `name` in `web/players.html`:
 
 ```HTML
-<html>
-  <body>
-    <!-- ... -->
-
-    <div>
-      TO DO: Put the UI widgets here.
-      <hello-world name="John"></hello-world>
-      <hello-world name="Paul"></hello-world>
-    </div>
-  </body>
-</html>
+<span><b>{{player.name | capitalize}}</b></span>
 ```
 
 &rarr; Run in Dartium
 
-You should see _"Hello John!"_ and _"Hello Paul!"_.
+You should see the capitalized player name:
+
+![Single capitalized player](img/s5-player-uppercase.png).
 
 Key information:
-* `@published` means that is is an public attribute.
-* `@published` also means that it is observable, so it allows to uses live two-way data binding to synchronize DOM nodes and object models.
+* A filter is a function that transforms a value into another, used via the pipe syntax: `value | filter`. Any function that takes exactly one argument can be used as a filter.
+* The top-level function named `capitalize` is in the scope so if `player.name` is "John Lennon", then `person.name | capitalize` will have the value "JOHN LENNON".
+
+### Conditional template
+
+We want to display soldier icons in function of the number of player reinforcement:
+
+- ![!](img/soldier.png): if `reinforcement` is less or equal than `1`
+- ![!](img/soldier.png)![!](img/soldier.png): if `reinforcement` is equal to `2`
+- ![!](img/soldier.png)![!](img/soldier.png)![!](img/soldier.png): if `reinforcement` is greater or equal than `3`
+
+&rarr; In `web/players.html`, use conditional templates:
+
+```HTML
+<span class="badge pull-right">
+  <i class="riskicon riskicon-soldier"></i>
+  <!-- TODO complete the if expression -->
+  <template if="{{ ... }}">
+    <i class="riskicon riskicon-soldier"></i>
+  </template>
+  <!-- TODO complete the if expression -->
+  <template if="{{ ... }}">
+    <i class="riskicon riskicon-soldier"></i>
+  </template>
+  {{ player.reinforcement }}
+</span>
+```
+
+&rarr; Complete the `if` conditions with the right expressions.  
+&rarr; Run in Dartium, and try to change the value of player `reinforcement`.
+
+Key information:
+* Control the UI with declarative conditional `if` templates.
+* Template conditionals are part of the data binding infrastructure. If `player.reinforcement` changes, the templates are automatically re-evaluated.
+
+### Template loop
+
+We want to display a list of players.
+
+&rarr; In `web/players.dart`, remove the `player` field and add two new published fields, `players` and `activePlayerId`:
+
+```Dart
+class RiskPlayers extends PolymerElement {
+  // We don't need player field anymore
+  // PlayerState player = new PlayerStateImpl(2, "John Lennon", "kadhafi.png", "blue", reinforcement: 2);
+
+  @published
+  Iterable<PlayerState> players = [
+    new PlayerStateImpl(1, "Paul McCartney", "castro.png", "green", reinforcement: 0),
+    new PlayerStateImpl(2, "John Lennon", "kadhafi.png", "blue", reinforcement: 2),
+    new PlayerStateImpl(3, "Ringo Starr", "staline.png", "yellow", reinforcement: 1),
+    new PlayerStateImpl(4, "George Harrison", "kim-jong-il.png", "red", reinforcement: 4),
+  ];
+
+  @published
+  int activePlayerId = 2;
+  // ...
+}
+```
+
+&rarr; In `web/players.html`, use conditional loop to iterate over `players`:
+
+```HTML
+<ul id="players" class="list-group list-group-inverse img-rounded">
+  <template repeat="{{ player in players }}">
+    <!-- Complete the following tokenList filter to enable `active` class if it is the active player -->
+    <li class="list-group-item {{ {'active': ...} }}">
+      <!-- ... -->
+    </li>
+  </template>
+</ul>
+```
+
+&rarr; Complete the [`tokenList` filter](http://www.polymer-project.org/docs/polymer/filters.html#tokenlist) to enable `active` class if it is the active player in function of `activePlayerId` value.  
+&rarr; Run in Dartium.
+
+You should see something like:
+
+![Players list](img/s5-players.png).
+
+Key information:
+* `{{ player in players }}` loops through a collection, instantiating a template for every item in the collection.
+* Template loops are part of the data binding infrastructure. If an item is added or removed from `players`, the contents of `<ul>` are automatically updated.
+* The `tokenList` filter is useful for binding to the class attribute. It allows you to dynamically set/remove class names based on the object passed to it. If the object key is truthy, the name will be applied as a class.
 
 ### Learn more
  - [Polymer.dart - Creating Elements](https://www.dartlang.org/polymer/creating-elements/)
- - [Polymer project](http://www.polymer-project.org/)
- - [A Guide to Styling Elements](http://www.polymer-project.org/articles/styling-elements.html)
- - [Custom elements](http://w3c.github.io/webcomponents/spec/custom/)
- - [Shadow DOM](http://w3c.github.io/webcomponents/spec/shadow/)
- - [HTML Templates](https://dvcs.w3.org/hg/webcomponents/raw-file/tip/spec/templates/index.html)
- - [HTML Imports](http://w3c.github.io/webcomponents/spec/imports/)
+ - [Polymer templates](https://www.dartlang.org/polymer/creating-elements/#template-conditionals)
+ - [Polymer expressions](https://pub.dartlang.org/packages/polymer_expressions)
 
 ### Problems?
-Check your code against the files in [s4_element](../samples/s4_element) ([diff](../../../compare/s2_classes...s4_element)).
+Check your code against the files in [s4_template](../samples/s4_template) ([diff](../../../compare/s3_element...s4_template)).
 
-## [Home](../README.md#code-lab-polymerdart) | [< Previous](step-2.md#step-2-dart-classes) | [Next >](step-5.md#step-5-polymer-templates)
+## [Home](../README.md#code-lab-polymerdart) | [< Previous](step-3.md#step-3-polymer-custom-element) | [Next >](step-5.md#step-5-risk-board)
