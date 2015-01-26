@@ -22,7 +22,6 @@ This code lab has the following sections:
 * [Step 4: First custom element](docs/step-4.md#step-4-polymer-custom-element)
 * [Step 5: Players list](docs/step-5.md#step-5-polymer-templates)
 * [Step 6: Map](docs/step-6.md#step-6-risk-board)
-* [Step 7: Player enrollment](docs/step-7.md#step-7-player-enrollment)
 * [Step 10: Put it all together](docs/step-10.md#step-10-put-it-all-together)
 
 _Note: missing steps are available in the full [Risk Codelab](https://github.com/dartlangfr/risk-codelab/blob/master/README.md#code-lab-polymerdart)._
