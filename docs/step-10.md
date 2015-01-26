@@ -1,12 +1,14 @@
 ## Step 10: Put it all together
 
-In this step, you put all together what you done in the previous and play the game :)
+In this step, you put all together what you done in the previous steps and play the game :)
 
-_**Keywords**: WebSocket client, enjoy_
+_**Keywords**: enjoy_
 
-### Update the `risk-game` element
+### Create a game component
 
-&rarr; Copy and paste the template below in `web/game.html`:
+This component contains all the components binded together to make the game work.
+
+&rarr; Create a new file `web/game.html`, with the following content:
 
 ```HTML
 <link rel="import" href="packages/polymer/polymer.html">
@@ -14,8 +16,8 @@ _**Keywords**: WebSocket client, enjoy_
 <link rel="import" href="board.html">
 <link rel="import" href="hello.html">
 <link rel="import" href="players.html">
-<link rel="import" href="modal.html">
-<link rel="import" href="registration.html">
+<link rel="import" href="packages/risk_engine/components/modal.html">
+<link rel="import" href="packages/risk_engine/components/registration.html">
 <link rel="import" href="packages/risk_engine/components/history.html">
 <link rel="import" href="packages/risk_engine/components/panel.html">
 
@@ -35,7 +37,7 @@ _**Keywords**: WebSocket client, enjoy_
 
         <div class="col-md-3">
           <hello-world name="{{ game.players[playerId].name }}"></hello-world>
-
+      
           <risk-players players="{{ game.players.values }}" activePlayerId="{{ game.activePlayerId }}" playersOrder="{{ game.playersOrder }}"></risk-players>
 
           <risk-panel game="{{ game }}" playerId="{{ playerId }}" pendingMove="{{ pendingMove }}"
@@ -55,55 +57,41 @@ _**Keywords**: WebSocket client, enjoy_
       </risk-modal>
     </template>
   </template>
-  
-  <script type="application/dart" src="game.dart"></script>
+  <script type="application/dart" src="packages/risk_engine/client.dart"></script>
 </polymer-element>
 ```
 
-&rarr; In `web/game.dart`, extend `RiskGame` with `AbstractRiskGame` and implement the missing methods:
+We provide for you the implementation in `packages/risk_engine/client.dart`. It has all the logic and manages the communication with the server.
 
-```Dart
-import 'dart:convert';
-import 'dart:html';
-import 'package:polymer/polymer.dart';
-import 'package:risk_engine/client.dart';
-import 'package:risk/risk.dart';
+&rarr; In `web/index.html`, use `<risk-game>`:
 
-@CustomTag('risk-game')
-class RiskGame extends AbstractRiskGame {
-  RiskGame.created(): super.created();
+```html
+<link rel="import" href="game.html">
+<!-- .... -->
+<body>
+  <header>
+    <!-- ... -->
+  </header>
 
-  // TODO: return the engine event Codec you previously implemented
-  @override
-  Codec<Object, Map> get eventEngineCodec => null;
-
-  // TODO: Instantiate a RiskGameStateImpl
-  @override
-  final RiskGameState game = null;
-
-  /// Listen events on the given [webSocket].
-  @override
-  void listen(WebSocket ws) {
-    // TODO: listen message coming from the given WebSocket, decode them and handle them with `handleEvents`
-  }
-
-  /// Send the given [event] through the WebSocket 
-  @override
-  void sendEvent(PlayerEvent event) {
-    // TODO: encode and send the given event through the WebSocket
-  }
-
-  /// Send a JoinGame event though the WebSocket
-  joinGame(CustomEvent e, var detail, Element target) {
-    // TODO: send a JoinGame event, filled with the data in `detail`
-  }
-}
+  <div>
+    <risk-game></risk-game>
+  </div>
+</body>
 ```
 
-Key information:
-* `AbstractRiskGame` class opens the WebSocket on the same url as the window location. It also provides logical in `handleEvents` to handle `EngineEvent`. It already implements Player interaction events sending the right `PlayerEvent`.
-* The `risk-panel` custom element provided in the `risk_engine` lib and handles some of the user interactions.
-* The `risk-history` displays all the human readable incoming events.
+### Start the server
+
+&rarr; Edit `bin/main.dart` and put this content:
+
+```Dart
+library risk.main;
+
+import 'package:risk_engine/server.dart';
+
+main(List<String> args) {
+  startServer(3000,  '../web');
+}
+```
 
 ### Play the game
 
